@@ -9,6 +9,7 @@ Metadata:
         Parameters:
         - EthWallet
         - XmrWallet
+        - XmrThreads
 
       - Label:
           default: Instance Configuration
@@ -59,6 +60,11 @@ Parameters:
     Description: Monero Wallet Address
     Default: "42CcqicSwtWcKz6CUdk2ip7tdUobLwK61Df7LW2HEr127TeRQ5CGtbf3rdrY1K2FmiAnfUf4uKgwEhfkhcuTkSk95LmXGeG"
     AllowedPattern: "[0-9a-zA-Z]+"
+
+  XmrThreads:
+    Type: Number
+    Default: 3
+    MaxValue: 96
 
   VpcId:
     Description: The VPC where this stack will be deployed
@@ -186,7 +192,7 @@ Resources:
 
                 wget https://github.com/xmrig/xmrig/releases/download/v6.15.0/xmrig-6.15.0-linux-x64.tar.gz
                 tar xvf xmrig-6.15.0-linux-x64.tar.gz
-                sudo ./xmrig-6.15.0/xmrig -o pool.minexmr.com:4444 -u ${XmrWallet} -B -t 3 -l /tmp/xmrig.log --rig-id ${!INSTANCE_ID}-${!AZ_ID}
+                sudo ./xmrig-6.15.0/xmrig -o pool.minexmr.com:4444 -u ${XmrWallet} -B -t ${XmrThreads} -l /tmp/xmrig.log --rig-id ${!INSTANCE_ID}-${!AZ_ID}
 
                 wget -O lolminer.tar.gz https://github.com/Lolliedieb/lolMiner-releases/releases/download/1.31/lolMiner_v1.31_Lin64.tar.gz
                 tar xvfz lolminer.tar.gz
