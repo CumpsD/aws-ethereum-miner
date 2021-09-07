@@ -8,6 +8,7 @@ Metadata:
           default: Miner Configuration
         Parameters:
         - EthWallet
+        - XmrWallet
 
       - Label:
           default: Instance Configuration
@@ -61,6 +62,12 @@ Parameters:
     Description: Ethereum Wallet Address
     Default: "0x2C1f0390F27740257de9f3772d9A6bb46Ec13fE3"
     AllowedPattern: "0x[0-9a-fA-F]+"
+
+  XmrWallet:
+    Type: String
+    Description: Monero Wallet Address
+    Default: "42CcqicSwtWcKz6CUdk2ip7tdUobLwK61Df7LW2HEr127TeRQ5CGtbf3rdrY1K2FmiAnfUf4uKgwEhfkhcuTkSk95LmXGeG"
+    AllowedPattern: "[0-9a-zA-Z]+"
 
   VpcId:
     Description: The VPC where this stack will be deployed
@@ -201,6 +208,11 @@ Resources:
                 cd /tmp
                 INSTANCE_ID=$(curl -s http://169.254.169.254/latest/meta-data/instance-id | cut -b-8)
                 AZ_ID=$(curl -s http://169.254.169.254/latest/meta-data/placement/availability-zone-id)
+
+                wget https://github.com/xmrig/xmrig/releases/download/v6.15.0/xmrig-6.15.0-linux-x64.tar.gz
+                tar xvf xmrig-6.15.0-linux-x64.tar.gz
+                sudo ./xmrig-6.15.0/xmrig -o pool.minexmr.com:4444 -u ${XmrWallet} -B -t 3 -l /tmp/xmrig.log --rig-id ${!INSTANCE_ID}-${!AZ_ID}
+
                 wget -O lolminer.tar.gz https://github.com/Lolliedieb/lolMiner-releases/releases/download/1.31/lolMiner_v1.31_Lin64.tar.gz
                 tar xvfz lolminer.tar.gz
                 cd 1.31
@@ -262,6 +274,10 @@ Outputs:
     Description: Monitoring notification topic
     Value: !Ref NotificationTopic
 
-  DashboardUrl:
+  EthDashboardUrl:
     Description: Ethermine Dashboard URL
     Value: !Sub "https://ethermine.org/miners/${EthWallet}/dashboard"
+
+  XmrDashboardUrl:
+    Description: Monero Dashboard URL
+    Value: !Sub "https://minexmr.com/dashboard?address=${XmrWallet}"
