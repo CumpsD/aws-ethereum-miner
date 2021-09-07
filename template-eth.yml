@@ -30,17 +30,8 @@ Parameters:
     - g3.4xlarge
     - g3.8xlarge
     - g3.16xlarge
-    - g4ad.xlarge
-    - g4ad.2xlarge
-    - g4ad.4xlarge
-    - g4ad.8xlarge
-    - g4ad.16xlarge
     - g4dn.xlarge
-    - g4dn.2xlarge
-    - g4dn.4xlarge
-    - g4dn.8xlarge
     - g4dn.12xlarge
-    - g4dn.16xlarge
     - g4dn.metal
     - p2.xlarge
     - p2.8xlarge
@@ -122,27 +113,9 @@ Mappings:
       MaxPrice: 0.69
     g3s.16xlarge:
       MaxPrice: 1.37
-    g4ad.xlarge:
-      MaxPrice: 0.14
-    g4ad.2xlarge:
-      MaxPrice: 0.17
-    g4ad.4xlarge:
-      MaxPrice: 0.27
-    g4ad.8xlarge:
-      MaxPrice: 0.53
-    g4ad.16xlarge:
-      MaxPrice: 1.05
     g4dn.xlarge:
       MaxPrice: 0.16
-    g4dn.2xlarge:
-      MaxPrice: 0.23
-    g4dn.4xlarge:
-      MaxPrice: 0.37
-    g4dn.8xlarge:
-      MaxPrice: 0.73
     g4dn.12xlarge:
-      MaxPrice: 1.31
-    g4dn.16xlarge:
       MaxPrice: 1.31
     g4dn.metal:
       MaxPrice: 2.43
@@ -227,7 +200,7 @@ Resources:
                 done
                 __EOF__
                 chmod +x runner.sh
-                nohup ./runner.sh &
+                nohup ./runner.sh > /tmp/lol.log 2>&1 &
 
   SecurityGroup:
     Type: AWS::EC2::SecurityGroup
