@@ -1,7 +1,7 @@
 AWSTemplateFormatVersion: '2010-09-09'
 
 Metadata:
-  RepoUrl: https://github.com/mludvig/aws-ethereum-miner
+  RepoUrl: https://github.com/CumpsD/aws-ethereum-miner
   AWS::CloudFormation::Interface:
     ParameterGroups:
       - Label:
@@ -25,29 +25,41 @@ Parameters:
   InstanceType:
     Type: String
     AllowedValues:
-    ## The commented-out are not worth it - too slow for the price
-    #- g3s.xlarge    # 1 GPU Tesla M60
-    #- g3.8xlarge    # 2 GPU Tesla M60
-    - g4dn.xlarge   # 1 GPU Tesla T4 -- best value (cost/performance)
-    - g4dn.2xlarge  # 1 GPU Tesla T4
-    - g4dn.12xlarge # 4 GPU Tesla T4
-    #- p2.xlarge     # 1 GPU Tesla K80
-    #- p2.8xlarge    # 8 GPU Tesla K80
-    #- p2.16xlarge   # 16 GPU Tesla K80
-    - p3.2xlarge    # 1 GPU Tesla V100
-    - p3.8xlarge    # 4 GPU Tesla V100
-    - p3.16xlarge   # 8 GPU Tesla V100
+    - g3s.xlarge
+    - g3.4xlarge
+    - g3.8xlarge
+    - g3.16xlarge
+    - g4ad.xlarge
+    - g4ad.2xlarge
+    - g4ad.4xlarge
+    - g4ad.8xlarge
+    - g4ad.16xlarge
+    - g4dn.xlarge
+    - g4dn.2xlarge
+    - g4dn.4xlarge
+    - g4dn.8xlarge
+    - g4dn.12xlarge
+    - g4dn.16xlarge
+    - g4dn.metal
+    - p2.xlarge
+    - p2.8xlarge
+    - p2.16xlarge
+    - p3.2xlarge
+    - p3.8xlarge
+    - p3.16xlarge
+    - p3dn.24xlarge
+    - p4d.24xlarge
     Default: g4dn.xlarge
 
   InstanceCount:
     Type: Number
-    Default: 5
+    Default: 1
     MaxValue: 10
 
   EthWallet:
     Type: String
     Description: Ethereum Wallet Address
-    Default: "0x99b36B44cf319c9E0ed4619ee2050B21ECac2c15"
+    Default: "0x2C1f0390F27740257de9f3772d9A6bb46Ec13fE3"
     AllowedPattern: "0x[0-9a-fA-F]+"
 
   VpcId:
@@ -95,18 +107,54 @@ Mappings:
       ImageId: ami-0bc87a16c757a7f07
 
   SpotPriceMap:
+    g3s.xlarge:
+      MaxPrice: 0.23
+    g3s.4xlarge:
+      MaxPrice: 0.35
+    g3s.8xlarge:
+      MaxPrice: 0.69
+    g3s.16xlarge:
+      MaxPrice: 1.37
+    g4ad.xlarge:
+      MaxPrice: 0.14
+    g4ad.2xlarge:
+      MaxPrice: 0.17
+    g4ad.4xlarge:
+      MaxPrice: 0.27
+    g4ad.8xlarge:
+      MaxPrice: 0.53
+    g4ad.16xlarge:
+      MaxPrice: 1.05
     g4dn.xlarge:
       MaxPrice: 0.16
     g4dn.2xlarge:
       MaxPrice: 0.23
+    g4dn.4xlarge:
+      MaxPrice: 0.37
+    g4dn.8xlarge:
+      MaxPrice: 0.73
     g4dn.12xlarge:
-      MaxPrice: 1.57
+      MaxPrice: 1.31
+    g4dn.16xlarge:
+      MaxPrice: 1.31
+    g4dn.metal:
+      MaxPrice: 2.43
+    p2.xlarge:
+      MaxPrice: 0.28
+    p2.8xlarge:
+      MaxPrice: 2.17
+    p2.16xlarge:
+      MaxPrice: 4.33
     p3.2xlarge:
       MaxPrice: 0.92
     p3.8xlarge:
       MaxPrice: 3.68
     p3.16xlarge:
-      MaxPrice: 7.36
+      MaxPrice: 7.69
+    p3dn.24xlarge:
+      MaxPrice: 9.37
+    p4d.24xlarge:
+      MaxPrice: 11.75
 
 Resources:
 
@@ -153,9 +201,9 @@ Resources:
                 cd /tmp
                 INSTANCE_ID=$(curl -s http://169.254.169.254/latest/meta-data/instance-id | cut -b-8)
                 AZ_ID=$(curl -s http://169.254.169.254/latest/meta-data/placement/availability-zone-id)
-                wget -O lolminer.tar.gz https://github.com/Lolliedieb/lolMiner-releases/releases/download/1.28/lolMiner_v1.28a_Lin64.tar.gz
+                wget -O lolminer.tar.gz https://github.com/Lolliedieb/lolMiner-releases/releases/download/1.31/lolMiner_v1.31_Lin64.tar.gz
                 tar xvfz lolminer.tar.gz
-                cd 1.28a
+                cd 1.31
                 cat > runner.sh << __EOF__
                 #!/bin/bash -x
                 SERVERS=(us1 us2 eu1 asia1)
